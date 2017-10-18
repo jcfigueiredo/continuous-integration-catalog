@@ -11,7 +11,37 @@
       type: "string"
       required: true
       default: "0.0.0.0"
-      
+    - variable: DATABASE_PATH
+      description: "Path of the data store"
+      label: "Database data"
+      type: "string"
+      required: true
+      default: "/database"
+    - variable: "DATABASE_LOGIN"
+      description: "Postgres login"
+      label: "Login"
+      type: "string"
+      required: true
+      default: "concourse"
+    - variable: "DATABASE_PASSWORD"
+      description: "Postgres password"
+      label: "Password"
+      type: "password"
+      required: true
+    - variable: "PUBLISH_PORT"
+      description: "Set port if you want publish external port for server or Loadbalancer"
+      label: "Publish port"
+      required: true
+      type: "string"
+      default: "8253"
+    - variable: "KEY_VOLUME_PATH"
+      description: "Set path of keys volume"
+      label: "Volume path"
+      required: true
+      type: "string"
+      default: "/var/keys"
+
+
 concourse-db:
   scale: 1
 concourse-web:

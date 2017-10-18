@@ -4,9 +4,9 @@ concourse-db:
     io.rancher.container.hostname_override: container_name
   environment:
     POSTGRES_DB: concourse
-    POSTGRES_USER: concourse
-    POSTGRES_PASSWORD: leanswpass
-    PGDATA: /database
+    POSTGRES_USER: ${DATABASE_LOGIN}
+    POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    PGDATA: ${DATABASE_PATH}
 
 concourse-datavolume:
   image: alpine
@@ -15,7 +15,7 @@ concourse-datavolume:
     io.rancher.container.start_once: true
     io.rancher.sidekicks: concourse-web,concourse-worker
   volumes:
-    - /var/keys
+    - ${KEY_VOLUME_PATH}
   command: sh -c "apk --update add openssh &&
     rm -rf /var/cache/apk/* &&
     mkdir -p /var/keys/web /var/keys/worker &&
@@ -26,12 +26,12 @@ concourse-datavolume:
     cp /var/keys/web/tsa_host_key.pub /var/keys/worker"
 
 concourse-web:
-  image: concourse/concourse:2.4.0
+  image: concourse/concourse:3.5.0
   labels:
     io.rancher.container.hostname_override: container_name
   links: [concourse-db]
   command: web
-  ports: ["8080:8080"]
+  ports: "${PUBLISH_PORT}:8080"
   volumes_from:
     - concourse-datavolume
   environment:
@@ -41,7 +41,7 @@ concourse-web:
     CONCOURSE_TSA_AUTHORIZED_KEYS: "/var/keys/web/authorized_worker_keys"
     CONCOURSE_SESSION_SIGNING_KEY: "/var/keys/web/session_signing_key"
     CONCOURSE_POSTGRES_DATA_SOURCE: |-
-      postgres://concourse:leanswpass@concourse-db:5432/concourse?sslmode=disable
+      postgres://${DATABASE_LOGIN}:${DATABASE_PASSWORD}@concourse-db:5432/concourse?sslmode=disable
 
 concourse-worker:
   image: concourse/concourse:2.4.0
@@ -56,4 +56,3 @@ concourse-worker:
     CONCOURSE_TSA_HOST: concourse-web
     CONCOURSE_TSA_PUBLIC_KEY: "/var/keys/worker/tsa_host_key.pub"
     CONCOURSE_TSA_WORKER_PRIVATE_KEY: "/var/keys/worker/worker_key"
-
