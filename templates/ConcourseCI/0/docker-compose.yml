@@ -44,7 +44,7 @@ concourse-web:
       postgres://${DATABASE_LOGIN}:${DATABASE_PASSWORD}@concourse-db:5432/concourse?sslmode=disable
 
 concourse-worker:
-  image: concourse/concourse:2.4.0
+  image: concourse/concourse:3.5.0
   privileged: true
   labels:
     io.rancher.container.hostname_override: container_name
