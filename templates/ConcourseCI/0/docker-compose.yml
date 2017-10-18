@@ -31,7 +31,7 @@ concourse-web:
     io.rancher.container.hostname_override: container_name
   links: [concourse-db]
   command: web
-  ports: "${PUBLISH_PORT}:8080"
+  ports: ["${PUBLISH_PORT}:8080"]
   volumes_from:
     - concourse-datavolume
   environment:
