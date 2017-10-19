@@ -33,6 +33,7 @@ services:
     labels:
       io.rancher.container.hostname_override: container_name
     links: [concourse-db]
+    depends_on: [concourse-db]
     command: web
     ports: ["${PUBLISH_PORT}:8080"]
     volumes_from:
@@ -56,6 +57,7 @@ services:
     labels:
       io.rancher.container.hostname_override: container_name
     links: [concourse-web]
+    depends_on: [concourse-web]
     command: worker
     volumes_from:
       - concourse-datavolume
